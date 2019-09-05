@@ -3,6 +3,8 @@ import numpy as np
 import queue
 import networkx as nx
 import matplotlib.pyplot as plt
+from collections import defaultdict
+from random import randint
 
 
 class Graph():
@@ -15,27 +17,28 @@ class Graph():
         self.graph.update(network.groupby(['followed_by'])[
                           'username'].apply(list))
 
-    def plotGraph(self):
-        # Plot a graph of all edges
-        edges = []
-        for key in self.graph.keys():
-            for value in self.graph[key]:
-                edges.append((key, value))
-        print('ploting...')
-        G = nx.DiGraph(directed=True)
-        G.add_edges_from(edges)
-        options = {
-            'node_color': 'red',
-            'node_size': 50,
-            'width': 0.1,
-            'arrowstyle': '-|>',
-            'arrowsize': 10,
-            'font_color': 'yellow',
-            'font_size': 10
-        }
-        f = plt.figure(figsize=(100, 100))
-        nx.draw_networkx(G, arrows=True, **options)
-        f.savefig("grafo.png")
+    def getVertices(self):
+        return list(self.graph.keys())
+
+    def DFS(self): 
+        vertices = self.getVertices()
+        visited = {}
+        stack = []
+
+        for s in vertices:
+            stack.append(s)  
+
+            while (len(stack)):  
+                s = stack[-1]  
+                stack.pop() 
+    
+                if (s not in visited.keys()):  
+                    print(s, end='\t') 
+                    visited[s] = True 
+    
+                for node in self.graph[s]:  
+                    if (node not in visited.keys()):  
+                        stack.append(node) 
 
     def distance(self, u, v):
         # Given two usernames, return the number of edges between them.
